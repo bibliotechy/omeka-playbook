@@ -1,0 +1,8 @@
+---
+
+- name: initial setup
+  hosts: all
+  sudo: yes
+  roles: 
+    - ansible-omeka-role
+

@@ -1,0 +1,7 @@
+---
+# tasks file for ansible-omeka-role
+#
+
+- include: setup-debian.yml
+  when: ansible_os_family == 'Debian'
+
