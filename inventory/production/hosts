@@ -1,0 +1,12 @@
+[db]
+db.mydomain.com
+
+[web]
+web.mydomain.com
+
+[all:children]
+db
+web
+
+[all:vars]
+ansible_ssh_port=822
