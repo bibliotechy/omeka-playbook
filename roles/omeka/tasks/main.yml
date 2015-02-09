@@ -1,0 +1,31 @@
+---
+# tasks file for ansible-omeka-role
+#
+
+- include: setup-debian.yml
+  when: ansible_os_family == 'Debian'
+
+- name: Download Omeka zip
+  get_url:
+    url=http://omeka.org/files/omeka-{{ omeka_version }}.zip
+    dest={{ download_path }}/omeka-{{ omeka_version}}.zip
+
+- name: Add webdev group
+  group:
+    name=webdev
+    state=present
+
+- name: UNzip omeka into web directory
+  shell: 
+    unzip {{ download_path }}/omeka-{{ omeka_version}}.zip -d {{web_root}}/
+    creates={{web_root}}/omeka-2.0
+    owner=root
+    group=webdev
+    mode=0755
+
+
+
+- name: add the ssh user to the webdev group
+  user:
+    name="{{ ansible_ssh_user }}"
+    groups=webdev

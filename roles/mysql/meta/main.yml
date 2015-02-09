@@ -1,0 +1,14 @@
+---
+
+galaxy_info:
+  author: DTS
+  description: Install and configure MySQL server
+  license: MIT
+  min_ansible_version: 1.4
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+  categories:
+    - database
+dependencies: []

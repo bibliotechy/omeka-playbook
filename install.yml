@@ -4,5 +4,6 @@
   hosts: all
   sudo: yes
   roles: 
-    - ansible-omeka-role
+    - mysql 
+    - omeka
 

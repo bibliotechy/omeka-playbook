@@ -1,0 +1,9 @@
+---
+
+- name: restart mysql
+  sudo: yes
+  service: name=mysql state=restarted
+
+- name: reload monit
+  sudo: yes
+  command: monit reload

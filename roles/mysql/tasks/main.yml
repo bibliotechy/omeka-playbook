@@ -1,0 +1,91 @@
+---
+# install mysql, create databases, users and assign permissions
+
+- name: install mysql packages
+  sudo: yes
+  apt:
+    pkg={{ item }}
+    state=installed
+    update_cache=yes
+  with_items:
+    - libmysqlclient-dev
+    - mysql-client
+    - mysql-server
+    - mysqltuner
+    - python-dev
+    - python-mysqldb
+    - python-setuptools
+  tags: 
+    - mysql
+
+- name: ensure mysql is running
+  sudo: yes
+  service:
+    name=mysql
+    state=started
+    enabled=yes
+  tags: 
+    - mysql
+
+- name: update mysql root account
+  mysql_user:
+    name=root host={{ item }}
+    password={{ mysql_root_pass }}
+  with_items:
+    - 127.0.0.1
+    - ::1
+    - localhost
+  tags: 
+    - mysql
+
+- name: delete root local hostname if present
+  mysql_user:
+    login_user=root
+    login_password={{ mysql_root_pass }}
+    user=root host={{ ansible_hostname }}
+    state=absent
+  tags:
+    - mysql
+
+- name: delete anonymous mysql user
+  mysql_user:
+    login_user=root
+    login_password={{ mysql_root_pass }}
+    user=""
+    state=absent
+  tags: 
+    - mysql
+
+- name: remove the mysql test database
+  sudo: yes
+  mysql_db:
+    login_user=root
+    login_password={{ mysql_root_pass }}
+    name=test
+    state=absent
+  tags: 
+    - mysql
+
+- name: create mysql configuration file
+  sudo: yes
+  template:
+    src=my.cnf.j2
+    dest=/etc/mysql/my.cnf
+    owner=root
+    group=root
+    mode=0644
+  notify:
+    - restart mysql
+  tags: 
+    - mysql
+
+- name: create .my.cnf file with root password credentials
+  sudo: yes
+  template:
+    src=credentials.cnf.j2
+    dest=/root/.my.cnf
+    owner=root
+    group=root
+    mode=0600
+  tags: 
+    - mysql
